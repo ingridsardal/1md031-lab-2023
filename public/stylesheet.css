@@ -4,6 +4,7 @@
 body {
     font-family: "Poppins", sans-serif;
     font-size: 12pt;
+
     
 }
 .classname {
@@ -31,16 +32,27 @@ body {
  div{ margin: 10px 20px 10px 20px;}
 
  header{
-background: no-repeat scroll center;
+background: url("https://static.thatsup.co/content/img/place/t/u/tugg-burgers-7.jpg");
 overflow: hidden;
+background-size: cover;
 height: 200px;
-margin: 0px 10px 0px 10px;}
-
-header h1{position: absolute;
-padding: 0px 10px 0px 10px;
-margin-top: -285px;
-text-align: center;
+width: 100%;
 }
 
-#bakgrundsbild{opacity: 0.7;
-width: 100%;height: auto;}
+header h1{position: absolute;
+   width: 40 rem;
+   margin: 0 auto 0 auto;
+   text-align: center;
+   top: 0;
+   left: 0;
+
+
+}
+
+.very-good{
+   color:green;
+}
+.master{
+   color: green;
+   font-weight: bold;
+}
