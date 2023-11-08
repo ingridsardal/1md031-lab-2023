@@ -17,8 +17,9 @@ body {
     text-transform: uppercase;
  }
  .section2{
-    color: white;
-    background-color: black;
+    color:  rgb(24, 24, 24);;
+    background-color: rgba(253,131,45,1);
+    border: none;
  }
  button:hover {
     background-color: rgb(12, 119, 0);
@@ -65,7 +66,7 @@ header h1{
    display: grid;
    grid-gap: 50px;
    grid-template-columns:33% 33% 33%;
-   color: #444;
+   color: rgb(24, 24, 24);
    margin: 0, 0, 0, -50px;
 }
 
@@ -90,7 +91,6 @@ header h1{
       display: grid;
       grid-gap: 50px;
       grid-template-columns:20% 20% 20%;
-      color: #444;
       margin: 0, 0, 0, -50px;
    }
 }
