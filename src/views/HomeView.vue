@@ -67,11 +67,14 @@
     </p>
 
 </section>
-
-<button type="submit">
+<div id="orders">
+<button type="submit" v-on:click="sendOrder()">
     <img src="https://w7.pngwing.com/pngs/601/52/png-transparent-paper-plane-airplane-paper-plane-aeroplane-angle-furniture-rectangle-thumbnail.png" alt="Span" title="Send" style="width: 14px;">
     Place order
   </button>
+</div>
+
+
 </main>
 <hr>
 <footer>
@@ -126,9 +129,12 @@ export default {
                                 orderItems: ["Beans", "Curry"]
                               }
                  );
-    }
-  }
-}
+    },
+    sendOrder: function() {
+      alert("Order placed!");
+      const orderDetails =
+       }
+}}
 </script>
 
 <style>
@@ -205,22 +211,6 @@ display: flex;
   justify-content: space-around; 
 }
 
-.box {
-   border-radius: 5px;
-
-}
-
-.a {
- 
-}
-.b {
-   
-}
-.c {
-}
-.d {
-   
-}
 @media screen and (max-width: 800px) {
    .wrapper {
       display: grid;
