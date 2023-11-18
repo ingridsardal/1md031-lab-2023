@@ -1,59 +1,29 @@
 <template>
-  <div>
-    <div>
-      <h1>Burgers</h1>
-      <Burger v-for="burger in burgers"
-              v-bind:burger="burger" 
-              v-bind:key="burger.name"/>
-    </div>
+  <main>
+    <header>
+      <h1>Welcome to BurgerOnline</h1>
+    </header>
     <div id="map" v-on:click="addOrder">
       click here
     </div>
-      <!-- Dynamic text -->
-<input type="text" v-model="yourVariable">
-<div>
-  {{ yourVariable }}
+
+    <section>
+      <h2>Select burger</h2>
+      <p>This is where you execute burger selection</p>
+
+      <div class="wrapper">
+      
+      <div v-for="burger in burgers" 
+      v-bind:key="burger.name">
+      <h3>{{ burger.name }}</h3>
+      <img v-bind:src="burger.imageUrl" alt="Burger Image" style="width: 200px;">
+      <p>Contains: {{ burger.ingredients.join(', ') }}</p>
 </div>
 
-  </div>
+      </div>
+    </section>  
 
 
-    <header>
-        <h1>Welcome to BurgerOnline</h1>
-    </header>
-    <main>
-
-        <section>
-            <h2>Select burger</h2>
-                <p>This is where you execute burger selection</p>
-                <div class="wrapper">
-                    <div class="box a"><h3>Original burger</h3>
-                        <img src=orginalburger.png alt="Span" title="Original burger" style="width: 200px;">
-                        <ul>
-                            <li>Bread</li>
-                            <li>Meat</li>
-                            <li>Vegetables</li>
-                        </ul></div>
-                  
-                    <div class="box b"> <h3>Chicken burger</h3>
-                        <img src=chickenburger.png alt="Span" title="Chicken burger" style="width: 200px;;">
-                        <ul>
-                            <li>Bread</li>
-                            <li>Chicken</li>
-                            <li>Vegetables</li>
-                        </ul></div>
-
-                  <div class="box c">   <h3>Halloumi burger</h3>
-                        <img src="halloumiburger.png" alt="Span" title="Halloumi burger" style="width: 200px;">
-                        <ul>
-                            <li>Bread</li>
-                            <li>Halloumi</li>
-                            <li>Vegetables</li>
-                        </ul></div>        
-                
-                  </div>
-              
-          </section>
 <section  class="section2"> 
     <p>
     <h2>Customer information</h2>
@@ -113,20 +83,23 @@
 <script>
 import Burger from '../components/OneBurger.vue'
 import io from 'socket.io-client'
+import menu from '../assets/menu.json'
+
+
 
 const socket = io();
 
-function MenuItem(name, imageUrl, allergies) {
+function MenuItem(name, imageUrl, ingredients) {
   this.name = name;
   this.imageUrl = imageUrl;
-  this.allergies = allergies;
+  this.ingredients = ingredients;
 }
 
-let BurgerMenu = [new MenuItem('Original burger', 'https://example.com/image.jpg', ['meat', 'gluten']), 
-  new MenuItem('Chicken burger', 'https://example.com/image.jpg', ['chicken', 'gluten']),
-  new MenuItem('Halloumi burger', 'https://example.com/image.jpg', ['lactose', 'gluten'])];
+const burgerMenu = menu.map(item => new MenuItem(item.name, item.imageUrl, item.ingredients));  
 
-console.log(BurgerMenu);
+/* burgerMenu = [new MenuItem('Original burger', 'orginalburger.png', ['meat', 'vegetables', 'bread']), 
+  new MenuItem('Chicken burger', 'chickenburger.png', ['chicken', 'vegetables', 'bread']),
+  new MenuItem('Halloumi burger', 'halloumiburger.png', ['halloumi', 'vegetables', 'bread'])]; */
 
 export default {
   name: 'HomeView',
@@ -135,7 +108,7 @@ export default {
   },
   data: function () {
     return {
-      burgers: BurgerMenu,
+      burgers: burgerMenu,
         yourVariable: 'Välj en burgare'
     }
 
@@ -228,11 +201,8 @@ header h1{
 
 
 .wrapper {
-   display: grid;
-   grid-gap: 50px;
-   grid-template-columns:33% 33% 33%;
-   color: rgb(24, 24, 24);
-   margin: 0, 0, 0, -50px;
+display: flex;
+  justify-content: space-around; 
 }
 
 .box {

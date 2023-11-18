@@ -1,0 +1,16 @@
+[ {
+    "name": "Original burger",
+    "imageUrl": "orginalburger.png",
+    "ingredients": ["meat", "vegetables", "bread"]
+  },
+  {
+    "name": "Chicken burger",
+    "imageUrl": "chickenburger.png",
+    "ingredients": ["chicken", "vegetables", "bread"]
+  },
+  {
+    "name": "Halloumi burger",
+    "imageUrl": "halloumiburger.png",
+    "ingredients": ["halloumi", "vegetables", "bread"]
+  }
+]
