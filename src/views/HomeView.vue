@@ -12,15 +12,11 @@
       <p>This is where you execute burger selection</p>
 
       <div class="wrapper">
-      
-      <div v-for="burger in burgers" 
-      v-bind:key="burger.name">
-      <h3>{{ burger.name }}</h3>
-      <img v-bind:src="burger.imageUrl" alt="Burger Image" style="width: 200px;">
-      <p>Contains: {{ burger.ingredients.join(', ') }}</p>
-</div>
-
-      </div>
+      <Burger v-for="burger in burgers" v-bind:burger="burger"
+      v-bind:key="burger.name"
+      v-on:orderedBurger="addToOrder($event)"/> 
+    </div>
+  
     </section>  
 
 
@@ -29,39 +25,39 @@
     <h2>Customer information</h2>
     <p>This is where you provide necessary information</p>
     <p>
-        <label for="name">Full name</label><br>
-        <input type="text" id="name" name="fn" required="required" placeholder="First- and last name">
+        <label for="name">Full name</label><br> 
+        <input type="text" id="name" v-model="name" required="required" placeholder="First- and last name">
     </p>
     <p><label for="email">E-mail</label><br>
-        <input type="email" id="email" name="em" required="required" placeholder="E-mail address">
+        <input type="email" id="email" v-model="email" required="required" placeholder="E-mail address">
     </p>
     <p>
         <label for="street">Street</label><br>
-        <input type="text" id="street" name="ln" placeholder="Street name">
+        <input type="text" id="street" v-model="street" required="required" placeholder="Street name">
     </p>
     <p>
         <label for="house">House/apt no</label><br>
-        <input type="text" id="house" name="ln" placeholder="House or apt no">
+        <input type="text" id="house" v-model="house" required="required" placeholder="House or apt no">
     </p>
     <p> 
-        <label for="radiobutton">Gender</label><br>
-        <input type="radio" id="radiobutton" name="rb" checked="checked" placeholder="Do not wish to provide">
-        <label for="radiobutton">Do not wish to provide</label><br>
-        <input type="radio" id="radiobutton" name="rb" placeholder="Male">
-        <label for="radiobutton">Male</label><br>
-        <input type="radio" id="radiobutton" name="rb" placeholder="Female">
-        <label for="radiobutton">Female</label><br>
-        
-        
+        <label for="radiobuttons">Gender</label><br>
+        <input type="radio" id="blank" value="blank" v-model="rb">
+        <label for="blank">Do not wish to provide</label><br>
+        <input type="radio" id="male" value="male" v-model="rb">
+        <label for="male">Male</label><br>
+        <input type="radio" id="female" value="female" v-model="rb">
+        <label for="female">Female</label><br>
     </p>
     <p>
-        <label for="recipient">Select payment method</label><br>
-
-        <select id="recipient" name="rcp" required="required">
-            <option>Credit card</option>
-            <option>Debit card</option>
-            <option>Swish</option>
+        <label for="payment">Select payment method</label><br>
+        {{ Payment }}
+        <select id="payment" v-model="payment">
+          <option disabled value="">Please select one</option>
+          <option>Credit card</option>
+          <option>Debit card</option>
+          <option>Swish</option>
         </select>
+  
 
      </p>
     </p>
@@ -73,7 +69,6 @@
     Place order
   </button>
 </div>
-
 
 </main>
 <hr>
@@ -88,17 +83,17 @@ import Burger from '../components/OneBurger.vue'
 import io from 'socket.io-client'
 import menu from '../assets/menu.json'
 
-
-
 const socket = io();
 
-function MenuItem(name, imageUrl, ingredients) {
+function MenuItem(name, imageUrl, ingredients, amountOrdered) {
   this.name = name;
   this.imageUrl = imageUrl;
   this.ingredients = ingredients;
+  this.amountOrdered=amountOrdered;
 }
 
-const burgerMenu = menu.map(item => new MenuItem(item.name, item.imageUrl, item.ingredients));  
+const burgerMenu = menu.map(item => new MenuItem(item.name, item.imageUrl, item.ingredients, 0));  
+
 
 /* burgerMenu = [new MenuItem('Original burger', 'orginalburger.png', ['meat', 'vegetables', 'bread']), 
   new MenuItem('Chicken burger', 'chickenburger.png', ['chicken', 'vegetables', 'bread']),
@@ -112,7 +107,9 @@ export default {
   data: function () {
     return {
       burgers: burgerMenu,
-        yourVariable: 'Välj en burgare'
+      amountOrdered:0,
+      orderedBurgers:{}
+
     }
 
   },
@@ -130,10 +127,24 @@ export default {
                               }
                  );
     },
+    addToOrder: function (event) {
+  this.orderedBurgers[event.name] = event.amount;
+    },
+
     sendOrder: function() {
       alert("Order placed!");
-      const orderDetails =
-       }
+      const orderDetails = [
+      this.name,
+      this.email,
+      this.street,
+      this.house,
+      this.rb,
+      this.payment,
+      JSON.stringify(this.orderedBurgers)
+      ]
+      console.log(orderDetails)
+       },
+
 }}
 </script>
 
@@ -169,7 +180,7 @@ body {
     background-color: rgb(12, 119, 0);
  }
  section {
-    padding: 10px 20px 10px 20px;
+    padding: 10px 0px 10px 20px;
     margin: 10px;
     border: 2px dotted #ff9900;
  }
@@ -207,8 +218,11 @@ header h1{
 
 
 .wrapper {
-display: flex;
-  justify-content: space-around; 
+   display: grid;
+   grid-gap: 50px;
+   grid-template-columns:33% 33% 33%;
+   color: rgb(24, 24, 24);
+   padding-right: 50px;
 }
 
 @media screen and (max-width: 800px) {
