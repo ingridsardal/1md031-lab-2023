@@ -2,8 +2,13 @@
 <div>
   <h3>{{ burger.name }}</h3>
   <img v-bind:src="burger.imageUrl" alt="Burger Image" style="width: 200px;">
-  <p>Contains: {{ burger.ingredients.join(', ') }}</p>
-  <p>Amount Ordered: {{ this.amountOrdered }}</p>
+  <p>Contains {{ burger.ingredients.join(', ') }}</p>
+  
+  <p v-if="burger.gluten && burger.lactose" class="gluten-lactose"> Allergenes: Gluten and lactose </p>
+  <p v-else-if="burger.gluten" class="gluten"> Allergenes: Gluten </p>
+  <p v-else-if="burger.lactose" class="lactose"> Allergenes: Lactose </p>
+
+  <p>Quantity: {{ this.amountOrdered }}</p>
   <div>
     <button id="decreaseButton" v-on:click="decreaseNr"> - </button>
     <button id="increaseButton" v-on:click="increaseNr"> + </button>
@@ -48,6 +53,12 @@
   
   <!-- Add "scoped" attribute to limit CSS to this component only -->
   <style scoped>
+.gluten-lactose{font-weight: bold; 
+}    
+.lactose{font-weight: bold;
+}
+.gluten{font-weight: bold;
+}
 
   </style>
   

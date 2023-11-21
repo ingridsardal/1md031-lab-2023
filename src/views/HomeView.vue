@@ -3,13 +3,10 @@
     <header>
       <h1>Welcome to BurgerOnline</h1>
     </header>
-    <div id="map" v-on:click="addOrder">
-      click here
-    </div>
 
     <section>
-      <h2>Select burger</h2>
-      <p>This is where you execute burger selection</p>
+      <h2>Our burgers</h2>
+      <p>Select the burgers you want to order</p>
 
       <div class="wrapper">
       <Burger v-for="burger in burgers" v-bind:burger="burger"
@@ -21,9 +18,8 @@
 
 
 <section  class="section2"> 
-    <p>
     <h2>Customer information</h2>
-    <p>This is where you provide necessary information</p>
+    <p>Please provide the necessary information below</p>
     <p>
         <label for="name">Full name</label><br> 
         <input type="text" id="name" v-model="name" required="required" placeholder="First- and last name">
@@ -31,23 +27,24 @@
     <p><label for="email">E-mail</label><br>
         <input type="email" id="email" v-model="email" required="required" placeholder="E-mail address">
     </p>
-    <p>
+    <!---  <p>
         <label for="street">Street</label><br>
         <input type="text" id="street" v-model="street" required="required" placeholder="Street name">
     </p>
-    <p>
-        <label for="house">House/apt no</label><br>
+   <p>
+         <label for="house">House/apt no</label><br>
         <input type="text" id="house" v-model="house" required="required" placeholder="House or apt no">
+    </p>--->
+    <p>
+      <label for="radiobuttons">Gender</label><br>
+      <input type="radio" id="blank" value="blank" v-model="rb">
+      <label for="blank">Do not wish to provide</label><br>
+      <input type="radio" id="male" value="male" v-model="rb">
+      <label for="male">Male</label><br>
+      <input type="radio" id="female" value="female" v-model="rb">
+      <label for="female">Female</label><br>
     </p>
-    <p> 
-        <label for="radiobuttons">Gender</label><br>
-        <input type="radio" id="blank" value="blank" v-model="rb">
-        <label for="blank">Do not wish to provide</label><br>
-        <input type="radio" id="male" value="male" v-model="rb">
-        <label for="male">Male</label><br>
-        <input type="radio" id="female" value="female" v-model="rb">
-        <label for="female">Female</label><br>
-    </p>
+    
     <p>
         <label for="payment">Select payment method</label><br>
         {{ Payment }}
@@ -57,14 +54,21 @@
           <option>Debit card</option>
           <option>Swish</option>
         </select>
-  
-
      </p>
-    </p>
 
 </section>
+
+<div class="mapsection">
+ <h2>Mark the delivery adress on the map</h2> 
+  <div id="map" v-on:click="setLocation"> 
+
+
+<div id="dots"> <div v-bind:style="{left: location.x + 'px', top: location.y + 'px'}">
+           T </div></div></div> </div>
+
+
 <div id="orders">
-<button type="submit" v-on:click="sendOrder()">
+<button type="submit" v-on:click="submitForm()">
     <img src="https://w7.pngwing.com/pngs/601/52/png-transparent-paper-plane-airplane-paper-plane-aeroplane-angle-furniture-rectangle-thumbnail.png" alt="Span" title="Send" style="width: 14px;">
     Place order
   </button>
@@ -73,7 +77,7 @@
 </main>
 <hr>
 <footer>
-    End notes
+    BurgersOnline - best burgers in town!
 </footer>  
 
 </template>
@@ -85,14 +89,16 @@ import menu from '../assets/menu.json'
 
 const socket = io();
 
-function MenuItem(name, imageUrl, ingredients, amountOrdered) {
+function MenuItem(name, imageUrl, ingredients, gluten, lactose, amountOrdered) {
   this.name = name;
   this.imageUrl = imageUrl;
   this.ingredients = ingredients;
+  this.gluten = gluten;
+  this.lactose = lactose;
   this.amountOrdered=amountOrdered;
 }
 
-const burgerMenu = menu.map(item => new MenuItem(item.name, item.imageUrl, item.ingredients, 0));  
+const burgerMenu = menu.map(item => new MenuItem(item.name, item.imageUrl, item.ingredients, item.gluten, item.lactose, 0));  
 
 
 /* burgerMenu = [new MenuItem('Original burger', 'orginalburger.png', ['meat', 'vegetables', 'bread']), 
@@ -107,8 +113,13 @@ export default {
   data: function () {
     return {
       burgers: burgerMenu,
+      rb: 'blank',
+      payment:'',
       amountOrdered:0,
-      orderedBurgers:{}
+      orderedBurgers:{},
+      location: { x: 0,
+            y: 0
+          }
 
     }
 
@@ -120,39 +131,60 @@ export default {
     addOrder: function (event) {
       var offset = {x: event.currentTarget.getBoundingClientRect().left,
                     y: event.currentTarget.getBoundingClientRect().top};
-      socket.emit("addOrder", { orderId: this.getOrderNumber(),
-                                details: { x: event.clientX - 10 - offset.x,
-                                           y: event.clientY - 10 - offset.y },
-                                orderItems: ["Beans", "Curry"]
-                              }
-                 );
+
+      this.location.x=event.clientX -30 - offset.x;
+      this.location.y=event.clientY -20 - offset.y;
+    },
+    setLocation: function (event) {
+      //var offset = {x: event.currentTarget.getBoundingClientRect().left,
+        //            y: event.currentTarget.getBoundingClientRect().top};
+      this.location.x=event.clientX -30 - event.currentTarget.getBoundingClientRect().left;
+      this.location.y=event.clientY -20 - event.currentTarget.getBoundingClientRect().top;
+     // var coord = [this.location.x,this.location.y]
+      console.log("reached")
     },
     addToOrder: function (event) {
   this.orderedBurgers[event.name] = event.amount;
     },
 
-    sendOrder: function() {
+    submitForm: function() {
       alert("Order placed!");
+            socket.emit("addOrder", { orderId: this.getOrderNumber(),
+                                details: { x: this.location.x,
+                                           y: this.location.y },
+                               orderItems: this.orderedBurgers,
+                               customerDetails: {name: this.name, email: this.email, gender: this.rb, payment: this.payment}
+                            }
+                 );
+                 
+           
       const orderDetails = [
       this.name,
       this.email,
-      this.street,
-      this.house,
+      //this.street,
+      //this.house,
       this.rb,
       this.payment,
       JSON.stringify(this.orderedBurgers)
       ]
       console.log(orderDetails)
-       },
+       }
+       
 
 }}
 </script>
 
 <style>
   #map {
-    width: 300px;
-    height: 300px;
-    background-color: red;
+    background:url('../../public/img/polacks.jpg');
+    width:1920px;
+    height:1078px;
+  }
+
+  .mapsection{
+    height: 500px;
+    width:100%px;
+    overflow: scroll;
   }
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300&display=swap");
 
@@ -193,6 +225,7 @@ body {
 background: url("https://static.thatsup.co/content/img/place/t/u/tugg-burgers-7.jpg");
 overflow: hidden;
 background-size: cover;
+background-position: center;
 height: 200px;
 width: 100%;
 }
@@ -203,6 +236,7 @@ header h1{
    top: 0;
    left: 0;
    color:antiquewhite;
+   text-shadow: 2px 2px 2px rgb(71, 71, 71);
 
 
 }
@@ -216,7 +250,6 @@ header h1{
 }
 
 
-
 .wrapper {
    display: grid;
    grid-gap: 50px;
@@ -225,6 +258,8 @@ header h1{
    padding-right: 50px;
 }
 
+footer {text-align:center;}
+
 @media screen and (max-width: 800px) {
    .wrapper {
       display: grid;
@@ -232,5 +267,19 @@ header h1{
       grid-template-columns:20% 20% 20%;
       margin: 0, 0, 0, -50px;
    }
+   .mapsection{font-size:12px;
+   text-align: left;
+   }
+
 }  
+
+  #dots div {
+    position: absolute;
+    background: black;
+    color: white;
+    border-radius: 10px;
+    width:20px;
+    height:20px;
+    text-align: center;
+  }
 </style>

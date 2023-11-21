@@ -74,18 +74,8 @@ header h1{
    border-radius: 5px;
 
 }
-
-.a {
- 
-}
-.b {
-   
-}
-.c {
-}
-.d {
-   
-}
+.lactose{font-weight: bold;}
+.gluten{font-weight: bold;}
 @media screen and (max-width: 800px) {
    .wrapper {
       display: grid;
