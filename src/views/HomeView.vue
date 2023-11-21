@@ -6,7 +6,7 @@
 
     <section>
       <h2>Our burgers</h2>
-      <p>Select the burgers you want to order</p>
+      <p>Select which burgers you want to order</p>
 
       <div class="wrapper">
       <Burger v-for="burger in burgers" v-bind:burger="burger"
@@ -58,15 +58,16 @@
 
 </section>
 
-<div class="mapsection">
+<section3>
  <h2>Mark the delivery adress on the map</h2> 
+ <div class="mapsection">
   <div id="map" v-on:click="setLocation"> 
 
 
 <div id="dots"> <div v-bind:style="{left: location.x + 'px', top: location.y + 'px'}">
            T </div></div></div> </div>
 
-
+</section3>
 <div id="orders">
 <button type="submit" v-on:click="submitForm()">
     <img src="https://w7.pngwing.com/pngs/601/52/png-transparent-paper-plane-airplane-paper-plane-aeroplane-angle-furniture-rectangle-thumbnail.png" alt="Span" title="Send" style="width: 14px;">
@@ -179,6 +180,7 @@ export default {
     background:url('../../public/img/polacks.jpg');
     width:1920px;
     height:1078px;
+
   }
 
   .mapsection{
@@ -207,6 +209,9 @@ body {
     color:  rgb(24, 24, 24);;
     background-color: rgba(253,131,45,1);
     border: none;
+ }
+ section3 h2{
+  margin-left:1em;
  }
  button:hover {
     background-color: rgb(12, 119, 0);
